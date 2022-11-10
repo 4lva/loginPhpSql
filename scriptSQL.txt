@@ -1,0 +1,10 @@
+CREATE DATABASE php_login;
+USE php_login;
+CREATE TABLE usuarios(
+username VARCHAR(40) PRIMARY KEY NOT NULL,
+contrasenia VARCHAR(250) NOT NULL,
+rol VARCHAR(10)
+);
+
+/*Utilizamos el tipo de dato varchar ya que no sabemos especificamente
+el tamaño de los datos que van a ser ingresados*/
