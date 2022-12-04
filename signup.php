@@ -12,14 +12,16 @@ if (!empty($_POST['usuario']) && !empty($_POST['password']) && !empty($_POST['pa
         $records->execute();
         $results = $records->fetch(PDO::FETCH_ASSOC);
         if (strcmp($results['username'], $_POST['usuario']) != 0) {
-            //inserta los datos en la base de datos y redirige a la pagina de error
+            //inserta los datos en la base de datos y redirige a la pagina de login
             $sql = "INSERT INTO usuarios( username, contrasenia) VALUES ( :username, :contrasenia)";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':username', $_POST['usuario']);
             $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
             $stmt->bindParam(':contrasenia', $password);
-
-            if ($stmt->execute()) {
+            $sql2 = "INSERT INTO imagenes( usuario) VALUES ( :username)";
+            $stmt2 = $conn->prepare($sql2);
+            $stmt2->bindParam(':username', $_POST['usuario']);;
+            if ($stmt->execute()&&$stmt2->execute()) {
                 header('Location: /hlc/loginPhpSql/login.php');
             } else {
                 $message = 'Error al crear el usuario';
@@ -44,6 +46,9 @@ if (!empty($_POST['usuario']) && !empty($_POST['password']) && !empty($_POST['pa
     <link rel="stylesheet" href="style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
 </head>
 
 <body>

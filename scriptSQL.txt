@@ -5,6 +5,13 @@ username VARCHAR(40) PRIMARY KEY NOT NULL,
 contrasenia VARCHAR(250) NOT NULL,
 rol VARCHAR(10)
 );
+CREATE TABLE imagenes (
+  usuario varchar(40) PRIMARY KEY,
+  imagen mediumblob,
+  tipo_imagen varchar(30)
+)
+
 
 /*Utilizamos el tipo de dato varchar ya que no sabemos especificamente
 el tamaño de los datos que van a ser ingresados*/
+
