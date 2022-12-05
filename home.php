@@ -3,6 +3,15 @@ require('database.php');
 session_start();
 if (isset($_SESSION['user_username'])) {
   $user = $_SESSION['user_username'];
+  //seleccionamos todas las personas
+  $records = $conn->prepare('SELECT * FROM personas');
+  $records->execute();
+  $results = $records->fetchAll();
+  //calculamos cuantos articulos habra por pagina y cuantas paginas hay
+  $articulosxpagina = 40;
+  $nump = $records->rowCount();
+  $paginas = $nump / $articulosxpagina;
+  $paginas = ceil($paginas);
 } else {
   header('Location: /hlc/loginPhpSql/login.php');
 }
@@ -62,6 +71,49 @@ if (isset($_SESSION['user_username'])) {
       </div>
     </div>
   </nav>
+  <!--Paginacion-->
+  <div class="container my-5">
+    <h1 style="color: white;">Paginación</h1>
+    <!--si no hay ningun get redireccionamos a la pagina uno-->
+    <?php
+    if (!$_GET) {
+      header('Location: /hlc/loginPhpSql/home.php?pagina=1');
+    }
+    if ($_GET['pagina']>$paginas||$_GET['pagina']<=0) {
+      header('Location: /hlc/loginPhpSql/home.php?pagina=1');
+    }
+    //seleccionamos las personas deseadas segun la pagina
+    $inicio = ($_GET['pagina'] - 1)*$articulosxpagina;
+    $rec = $conn->prepare('SELECT * FROM personas LIMIT :inicio,:final');
+    $rec->bindParam(':inicio',$inicio,PDO::PARAM_INT );
+    $rec->bindParam(':final',$articulosxpagina,PDO::PARAM_INT );
+    $rec->execute();
+    $results2 = $rec->fetchAll();
+    ?>
+    <!--mostramos los datos de las personas-->
+    <?php foreach ($results2 as $dato): ?>
+    <div class="alert alert-light" role="alert">
+      <?php echo ($dato['first_name']) ?>
+    </div>
+    <?php endforeach; ?>
+    <!--mostramos las paginas para poder seleccionarlas-->
+    <nav aria-label="Page navigation example">
+      <ul class="pagination">
+        <li class="page-item <?php echo $_GET['pagina'] <= 1 ? 'disabled' : '' ?>"><a class="page-link"
+            href="home.php?pagina=<?php echo $_GET['pagina'] - 1; ?>">Anterior</a></li>
+        <!--Generamos el numero de paginas de forma dinamica-->
+        <?php for ($i = 0; $i < $paginas; $i++): ?>
+        <li class="page-item <?php echo $_GET['pagina'] == $i + 1 ? 'active' : '' ?>">
+          <a class="page-link" href="home.php?pagina=<?php echo ($i + 1) ?>">
+            <?php echo ($i + 1) ?>
+          </a>
+        </li>
+        <?php endfor; ?>
+        <li class="page-item <?php echo $_GET['pagina'] >= $paginas ? 'disabled' : '' ?>"><a class="page-link"
+            href="home.php?pagina=<?php echo $_GET['pagina'] + 1; ?>">Siguiente</a></li>
+      </ul>
+    </nav>
+  </div>
 </body>
 
 </html>
