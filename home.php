@@ -93,7 +93,7 @@ if (isset($_SESSION['user_username'])) {
     <!--mostramos los datos de las personas-->
     <?php foreach ($results2 as $dato): ?>
     <div class="alert alert-light" role="alert">
-      <?php echo ($dato['first_name']) ?>
+      <?php echo ($dato['first_name'].' '.$dato['last_name'].' Email: '.$dato['email'].' Genero: '.$dato['gender']) ?>
     </div>
     <?php endforeach; ?>
     <!--mostramos las paginas para poder seleccionarlas-->
